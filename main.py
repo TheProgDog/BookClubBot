@@ -79,10 +79,13 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+	if message.author == client.user:
+				return
+
 	print(f'We just got a letter!')
 
 	if message.content.startswith("book!"):
-		split = message.split(" ")
+		split = message.content.split(" ")
 
 		print(f'The delimiters gave us this: {split}')
 
