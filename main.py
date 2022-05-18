@@ -31,6 +31,26 @@ client = discord.Client(intents=intents)
 # persist between Bot lifecycles as the bot crashes and
 # boots itself back up.
 
+
+
+
+
+# Methods for book club specific functionalities
+
+# Method to register a member to the book club
+def register_member():
+	# TODO: Register member
+	print('TODO: Register');
+
+
+# Method to leave the book club
+def unregister_member():
+	# TODO: Unregister
+	print('TODO: Unregister');
+
+
+method_dic = {"register": register_member, "unregister": unregister_member}
+
 # Event that activates as soon as the bot wakes up
 # Could have it send a "hello" message, could have it check databases, etc.
 @client.event
@@ -38,10 +58,10 @@ async def on_ready():
 		print(f'We have logged in as {client.user}')
 
 		# Fetches the channel that we'll use to
-		channel = client.get_channel(938205761027317830)
+		channel = client.get_channel(976299911274459146)
 
 		try:
-				await channel.send('fuck')
+				await channel.send('books')
 		except AttributeError:
 				print(
 						'~uwu~ :: It looks like that channel wannel doesn\'t existy wisty! :: ~owo~'
@@ -56,6 +76,21 @@ async def on_ready():
 				except AttributeError:
 						print("No activity is detected.")
 						pass
+
+@client.event
+async def on_message(message):
+	print(f'We just got a letter!')
+
+	if message.content.startswith("book!"):
+		split = message.split(" ")
+
+		print(f'The delimiters gave us this: {split}')
+
+		if split[1] in method_dic:
+			print(f'The command {split[1]} coincides with method {str(method_dic[split[1]])}')
+		else:
+			print(f'The command {split[1]} does not coincide with any method')
+
 
 
 client.run(bot_token)
