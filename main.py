@@ -38,13 +38,13 @@ client = discord.Client(intents=intents)
 # Methods for book club specific functionalities
 
 # Method to register a member to the book club
-def register_member():
+async def register_member():
 	# TODO: Register member
 	await channel.send('TODO: Register');
 
 
 # Method to leave the book club
-def unregister_member():
+async def unregister_member():
 	# TODO: Unregister
 	await channel.send('TODO: Unregister');
 
