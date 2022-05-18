@@ -40,13 +40,13 @@ client = discord.Client(intents=intents)
 # Method to register a member to the book club
 def register_member():
 	# TODO: Register member
-	print('TODO: Register');
+	await channel.send('TODO: Register');
 
 
 # Method to leave the book club
 def unregister_member():
 	# TODO: Unregister
-	print('TODO: Unregister');
+	await channel.send('TODO: Unregister');
 
 
 method_dic = {"register": register_member, "unregister": unregister_member}
@@ -90,7 +90,7 @@ async def on_message(message):
 		print(f'The delimiters gave us this: {split}')
 
 		if split[1] in method_dic:
-			print(f'The command {split[1]} coincides with method {str(method_dic[split[1]])}')
+			method_dic[split[1]]
 		else:
 			print(f'The command {split[1]} does not coincide with any method')
 
