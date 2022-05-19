@@ -1,6 +1,5 @@
 import os
 import discord
-import random
 
 #client = discord.Client()
 
@@ -32,25 +31,6 @@ client = discord.Client(intents=intents)
 # boots itself back up.
 
 
-
-
-
-# Methods for book club specific functionalities
-
-# Method to register a member to the book club
-async def register_member():
-	# TODO: Register member
-	await channel.send('TODO: Register');
-
-
-# Method to leave the book club
-async def unregister_member():
-	# TODO: Unregister
-	await channel.send('TODO: Unregister');
-
-
-method_dic = {"register": register_member, "unregister": unregister_member}
-
 # Event that activates as soon as the bot wakes up
 # Could have it send a "hello" message, could have it check databases, etc.
 @client.event
@@ -77,6 +57,30 @@ async def on_ready():
 						print("No activity is detected.")
 						pass
 
+					
+# Method to register a member to the book club
+async def register_member():
+	# TODO: Register member
+	try:
+		channel = client.get_channel(976299911274459146)
+		await channel.send('TODO: Register user to the club');
+	except AttributeError:
+		print('AttributeErr')
+
+
+# Method to leave the book club
+async def unregister_member():
+	# TODO: Unregister
+	try:
+		channel = client.get_channel(976299911274459146)
+		await channel.send('TODO: Unregister user from the club');
+	except AttributeError:
+		print('AttributeErr')
+
+
+method_dic = {"register": register_member, "unregister": unregister_member}
+
+
 @client.event
 async def on_message(message):
 	if message.author == client.user:
@@ -90,7 +94,8 @@ async def on_message(message):
 		print(f'The delimiters gave us this: {split}')
 
 		if split[1] in method_dic:
-			method_dic[split[1]]
+			await method_dic[split[1]]()
+			print(f'The command is {split[1]}')
 		else:
 			print(f'The command {split[1]} does not coincide with any method')
 
