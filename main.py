@@ -10,7 +10,6 @@ intents.presences = True
 
 # Declare global variables, dicts and what have you.
 channel = discord.TextChannel
-method_dic = {"register": register_member, "unregister": unregister_member}
 
 # Set this to true if you feel like debugging anything
 debugging = True
@@ -43,23 +42,29 @@ async def on_ready():
 
 
 # Method to register a member to the book club
-async def register_member():
+async def register_member(message):
 	# TODO: Register member
 	try:
 		channel = client.get_channel(976299911274459146)
-		await channel.send('TODO: Register user to the club');
+		await channel.send(f'TODO: Register {message.author} to the club');
 	except AttributeError:
 		print('AttributeErr')
 
 
 # Method to leave the book club
-async def unregister_member():
+async def unregister_member(message):
 	# TODO: Unregister
 	try:
 		channel = client.get_channel(976299911274459146)
-		await channel.send('TODO: Unregister user from the club');
+		await channel.send(f'TODO: Unregister {message.author} from the club');
 	except AttributeError:
 		print('AttributeErr')
+
+
+# Dictionary that holds commands
+# The key is each command (ex: register, schedule)
+# Each key points to its corresponding function
+method_dic = {"register": register_member, "unregister": unregister_member}
 
 
 @client.event
@@ -75,7 +80,7 @@ async def on_message(message):
 		print(f'The delimiters gave us this: {split}')
 
 		if split[1] in method_dic:
-			await method_dic[split[1]]()
+			await method_dic[split[1]](message)
 			print(f'The command is {split[1]}, calling method {method_dic[split[1]]}')
 		else:
 			print(f'The command {split[1]} does not coincide with any method')
