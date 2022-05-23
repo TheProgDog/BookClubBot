@@ -34,21 +34,53 @@ async def on_ready():
 		channel = client.get_channel(976299911274459146)
 
 		try:
-				await channel.send('books')
+			await channel.send('books')
+
 		except AttributeError:
-				print(
+			print(
 						'~uwu~ :: It looks like that channel wannel doesn\'t existy wisty! :: ~owo~'
-				)
+			)
 
 
 # Method to register a member to the book club
 async def register_member(message):
-	# TODO: Register member
 	try:
 		channel = client.get_channel(976299911274459146)
-		await channel.send(f'TODO: Register {message.author} to the club');
+
+		# Get references to the member and their guild here
+		# Guild is useful for managing roles & perms
+		member = message.author
+		member_guild = member.guild
+
+		# Makes sure the bookie role doesn't exist already
+		role_exists = discord.utils.get(member_guild.roles, name="Bookie")
+
+		# If bookie role doesn't exist, then create it:
+		if not role_exists:
+			await member_guild.create_role(name="Bookie", colour=discord.Colour(0xF88D89))
+
+			
+		# Make sure member doesn't already have the role:
+		has_role = discord.utils.get(member.roles, name="Bookie")
+
+		# If member has the role, scold them.
+		if has_role:
+			await channel.send(f'You\'re already part of the book club, silly willy!')
+		else:
+			print(f'Author: {member}')
+	
+			try:
+				book_role = discord.utils.get(member_guild.roles, name="Bookie")
+	
+				print(f'Book role: {book_role}')
+	
+				await member.add_roles(book_role)
+
+				await channel.send(f'Welcome to the club, {member.mention}!')
+			except AttributeError:
+				await channel.send('oh shit oh fuck something bad happened')
 	except AttributeError:
-		print('AttributeErr')
+		print(AttributeError)
 
 
 # Method to leave the book club
@@ -56,7 +88,18 @@ async def unregister_member(message):
 	# TODO: Unregister
 	try:
 		channel = client.get_channel(976299911274459146)
-		await channel.send(f'TODO: Unregister {message.author} from the club');
+
+		member = message.author
+
+		has_role = discord.utils.get(member.roles, name="Bookie")
+
+		if has_role:
+			book_role = discord.utils.get(member.roles, name="Bookie")
+			await member.remove_roles(book_role)
+
+			await channel.send(f'I-it\'s not like I\'m mad to see you go or anything! Just leave already....')
+		else:
+			await channel.send(f'You need to be part of the club to leave it, asswipe.')
 	except AttributeError:
 		print('AttributeErr')
 
@@ -64,7 +107,7 @@ async def unregister_member(message):
 # Dictionary that holds commands
 # The key is each command (ex: register, schedule)
 # Each key points to its corresponding function
-method_dic = {"register": register_member, "unregister": unregister_member}
+method_dic = {"join": register_member, "leave": unregister_member}
 
 
 @client.event
