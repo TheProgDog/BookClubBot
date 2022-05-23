@@ -59,7 +59,7 @@ async def register_member(message):
 		if not role_exists:
 			await member_guild.create_role(name="Bookie", colour=discord.Colour(0xF88D89))
 
-			
+
 		# Make sure member doesn't already have the role:
 		has_role = discord.utils.get(member.roles, name="Bookie")
 
@@ -68,12 +68,12 @@ async def register_member(message):
 			await channel.send(f'You\'re already part of the book club, silly willy!')
 		else:
 			print(f'Author: {member}')
-	
+
 			try:
 				book_role = discord.utils.get(member_guild.roles, name="Bookie")
-	
+
 				print(f'Book role: {book_role}')
-	
+
 				await member.add_roles(book_role)
 
 				await channel.send(f'Welcome to the club, {member.mention}!')
@@ -85,7 +85,6 @@ async def register_member(message):
 
 # Method to leave the book club
 async def unregister_member(message):
-	# TODO: Unregister
 	try:
 		channel = client.get_channel(976299911274459146)
 
@@ -104,10 +103,29 @@ async def unregister_member(message):
 		print('AttributeErr')
 
 
+# Lookup book information with Google API
+async def book_lookup(message):
+	# TODO: Actually fetch book information from Google
+
+	try:
+		channel = client.get_channel(976299911274459146)
+
+		member = message.author
+
+		split_str = message.content.split(" ", 2)
+
+		await channel.send(f'So you\'re trying to find information on the book \"{split_str[2]}\", is that correct? (Don\'t actually reply I won\'t say shit back)')
+
+	except AttributeError:
+		print('AttributeErr')
+
+
 # Dictionary that holds commands
 # The key is each command (ex: register, schedule)
 # Each key points to its corresponding function
-method_dic = {"join": register_member, "leave": unregister_member}
+method_dic = {"join": register_member,
+			  "leave": unregister_member,
+			  "lookup": book_lookup}
 
 
 @client.event
