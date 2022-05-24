@@ -1,5 +1,7 @@
 import os
 import discord
+import requests
+import json
 
 # Initiate intents for the bot
 # These lines grant the bot permissions, such as:
@@ -30,22 +32,11 @@ client = discord.Client(intents=intents)
 async def on_ready():
 		print(f'We have logged in as {client.user}')
 
-		# Fetches the channel that we'll use to
-		channel = client.get_channel(976299911274459146)
-
-		try:
-			await channel.send('books')
-
-		except AttributeError:
-			print(
-						'~uwu~ :: It looks like that channel wannel doesn\'t existy wisty! :: ~owo~'
-			)
-
 
 # Method to register a member to the book club
 async def register_member(message):
 	try:
-		channel = client.get_channel(976299911274459146)
+		channel = message.channel
 
 		# Get references to the member and their guild here
 		# Guild is useful for managing roles & perms
@@ -86,7 +77,7 @@ async def register_member(message):
 # Method to leave the book club
 async def unregister_member(message):
 	try:
-		channel = client.get_channel(976299911274459146)
+		channel = message.channel
 
 		member = message.author
 
@@ -108,7 +99,7 @@ async def book_lookup(message):
 	# TODO: Actually fetch book information from Google
 
 	try:
-		channel = client.get_channel(976299911274459146)
+		channel = message.channel
 
 		member = message.author
 
@@ -116,16 +107,27 @@ async def book_lookup(message):
 
 		await channel.send(f'So you\'re trying to find information on the book \"{split_str[2]}\", is that correct? (Don\'t actually reply I won\'t say shit back)')
 
+		lookup_test = requests.get('https://www.googleapis.com/books/v1/volumes?q=flowers+inauthor:keyes&maxResults=1&key=')
+
+		print(f'{lookup_test.json()["items"][0]["volumeInfo"]["description"]}')
+
 	except AttributeError:
 		print('AttributeErr')
 
+
+# "Help" menu
+async def help(message):
+	channel = message.channel
+
+	await channel.send("No.")
 
 # Dictionary that holds commands
 # The key is each command (ex: register, schedule)
 # Each key points to its corresponding function
 method_dic = {"join": register_member,
 			  "leave": unregister_member,
-			  "lookup": book_lookup}
+			  "lookup": book_lookup,
+				"help": help}
 
 
 @client.event
