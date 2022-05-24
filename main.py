@@ -107,6 +107,8 @@ async def book_lookup(message):
 
 		await channel.send(f'So you\'re trying to find information on the book \"{split_str[2]}\", is that correct? (Don\'t actually reply I won\'t say shit back)')
 
+		
+
 		lookup_test = requests.get('https://www.googleapis.com/books/v1/volumes?q=flowers+inauthor:keyes&maxResults=1&key=')
 
 		print(f'{lookup_test.json()["items"][0]["volumeInfo"]["description"]}')
