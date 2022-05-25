@@ -105,20 +105,24 @@ async def book_lookup(message):
 
 		split_str = message.content.split(" ", 2)
 
-		await channel.send(f'So you\'re trying to find information on the book \"{split_str[2]}\", is that correct? (Don\'t actually reply I won\'t say shit back)')
+		# await channel.send(f'So you\'re trying to find information on the book \"{split_str[2]}\", is that correct? (Don\'t actually reply I won\'t say shit back)')
 
 		req_base = "https://www.googleapis.com/books/v1/volumes?q=intitle:"
-		req_search = split[2].replace(" ", "+")
+		req_search = split_str[2].replace(" ", "+")
 
 		print(f'Lookup: {req_search}')
 
-		req_whole = req_base + req_search + "&maxResults=1&key="
+		req_whole = req_base + req_search + "&maxResults=10&key="
 
 		print(f'URL: {req_whole}')
 
-		lookup_test = requests.get('https://www.googleapis.com/books/v1/volumes?q=flowers+inauthor:keyes&maxResults=1&key=')
+		result = requests.get(req_whole).json()
 
-		print(f'{lookup_test.json()["items"][0]["volumeInfo"]["description"]}')
+		print(f'{result["items"][0]["volumeInfo"]["description"]}')
+
+		
+
+		await channel.send(f'Search results for: \"{split_str[2]}\": \n\n__**Author**__: {result["items"][0]["volumeInfo"]["authors"][0]}\n__**Title**__: \"{result["items"][0]["volumeInfo"]["title"]}\"\n__**Description**__: {result["items"][0]["volumeInfo"]["description"]}\n__**Pages**__: {result["items"][0]["volumeInfo"]["pageCount"]}\n__**ISBN-10**__: {result["items"][0]["volumeInfo"]["industryIdentifiers"][1]["identifier"]}\n__**ISBN-13**__: {result["items"][0]["volumeInfo"]["industryIdentifiers"][0]["identifier"]}')
 
 	except AttributeError:
 		print('AttributeErr')
