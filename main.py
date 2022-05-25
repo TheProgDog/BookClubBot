@@ -32,6 +32,17 @@ client = discord.Client(intents=intents)
 async def on_ready():
 		print(f'We have logged in as {client.user}')
 
+		channel = client.get_channel(976299911274459146)
+
+		try:
+
+			new_msg = await channel.send("existence is futile")
+
+			await new_msg.add_reaction(":arrow_left:")
+
+		except AttributeError:
+			print(AttributeError)
+
 
 # Method to register a member to the book club
 async def register_member(message):
@@ -54,16 +65,13 @@ async def register_member(message):
 		# Make sure member doesn't already have the role:
 		has_role = discord.utils.get(member.roles, name="Bookie")
 
+
 		# If member has the role, scold them.
 		if has_role:
 			await channel.send(f'You\'re already part of the book club, silly willy!')
 		else:
-			print(f'Author: {member}')
-
 			try:
 				book_role = discord.utils.get(member_guild.roles, name="Bookie")
-
-				print(f'Book role: {book_role}')
 
 				await member.add_roles(book_role)
 
@@ -101,8 +109,6 @@ async def book_lookup(message):
 	try:
 		channel = message.channel
 
-		member = message.author
-
 		split_str = message.content.split(" ", 2)
 
 		# await channel.send(f'So you\'re trying to find information on the book \"{split_str[2]}\", is that correct? (Don\'t actually reply I won\'t say shit back)')
@@ -110,17 +116,9 @@ async def book_lookup(message):
 		req_base = "https://www.googleapis.com/books/v1/volumes?q=intitle:"
 		req_search = split_str[2].replace(" ", "+")
 
-		print(f'Lookup: {req_search}')
-
 		req_whole = req_base + req_search + "&maxResults=10&key="
 
-		print(f'URL: {req_whole}')
-
 		result = requests.get(req_whole).json()
-
-		print(f'{result["items"][0]["volumeInfo"]["description"]}')
-
-		
 
 		await channel.send(f'Search results for: \"{split_str[2]}\": \n\n__**Author**__: {result["items"][0]["volumeInfo"]["authors"][0]}\n__**Title**__: \"{result["items"][0]["volumeInfo"]["title"]}\"\n__**Description**__: {result["items"][0]["volumeInfo"]["description"]}\n__**Pages**__: {result["items"][0]["volumeInfo"]["pageCount"]}\n__**ISBN-10**__: {result["items"][0]["volumeInfo"]["industryIdentifiers"][1]["identifier"]}\n__**ISBN-13**__: {result["items"][0]["volumeInfo"]["industryIdentifiers"][0]["identifier"]}')
 
@@ -148,18 +146,13 @@ async def on_message(message):
 	if message.author == client.user:
 				return
 
-	print(f'We just got a letter!')
-
 	if message.content.startswith("book!"):
 		split = message.content.split(" ")
 
-		print(f'The delimiters gave us this: {split}')
-
 		if split[1] in method_dic:
 			await method_dic[split[1]](message)
-			print(f'The command is {split[1]}, calling method {method_dic[split[1]]}')
 		else:
-			print(f'The command {split[1]} does not coincide with any method')
+			await channel.send(f'The command {split[1]} does not coincide with any method')
 
 
 
