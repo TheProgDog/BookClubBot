@@ -111,7 +111,7 @@ async def book_lookup(message):
 
 		result = requests.get(req_whole).json()
 
-		await channel.send(f'Search results for: \"{split_str[2]}\": \n\n__**Author**__: {result["items"][0]["volumeInfo"]["authors"][0]}\n__**Title**__: \"{result["items"][0]["volumeInfo"]["title"]}\"\n__**Description**__: {result["items"][0]["volumeInfo"]["description"]}\n__**Pages**__: {result["items"][0]["volumeInfo"]["pageCount"]}\n__**ISBN-10**__: {result["items"][0]["volumeInfo"]["industryIdentifiers"][1]["identifier"]}\n__**ISBN-13**__: {result["items"][0]["volumeInfo"]["industryIdentifiers"][0]["identifier"]}\n{result["items"][0]["volumeInfo"]["imageLinks"]["thumbnail"]}')
+		await print_book(split_str[2], result["items"][0]["volumeInfo"])
 
 	except AttributeError:
 		print('AttributeErr')
@@ -123,6 +123,7 @@ async def help(message):
 
 	await channel.send("No.")
 
+
 # Dictionary that holds commands
 # The key is each command (ex: register, schedule)
 # Each key points to its corresponding function
@@ -132,6 +133,13 @@ method_dic = {"join": register_member,
 				"help": help}
 
 
+# Print method for book information
+async def print_book(search, volume):
+	
+	await channel.send(f'Search results for: \"{search}\": \n\n__**Author**__: {volume["authors"][0]}\n__**Title**__: \"{volume["title"]}\"
+	\n__**Description**__:{volume["description"]}\n__**Pages**__: {volume["pageCount"]}\n__**ISBN-10**__: {volume["industryIdentifiers"][1]["identifier"]}
+	\n__**ISBN-13**__: {volume["industryIdentifiers"][0]["identifier"]}\n{volume["imageLinks"]["thumbnail"]}')
+
 # Reacting to reactions
 @client.event
 async def on_reaction_add(reaction, user):
@@ -140,8 +148,6 @@ async def on_reaction_add(reaction, user):
 	channel = reaction.channel
 
 	await channel.send(reaction)
-
-	
 
 
 @client.event
