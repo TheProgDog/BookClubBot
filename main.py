@@ -32,17 +32,6 @@ client = discord.Client(intents=intents)
 async def on_ready():
 		print(f'We have logged in as {client.user}')
 
-		channel = client.get_channel(976299911274459146)
-
-		try:
-
-			new_msg = await channel.send("existence is futile")
-
-			await new_msg.add_reaction(":arrow_left:")
-
-		except AttributeError:
-			print(AttributeError)
-
 
 # Method to register a member to the book club
 async def register_member(message):
@@ -118,9 +107,11 @@ async def book_lookup(message):
 
 		req_whole = req_base + req_search + "&maxResults=10&key="
 
+		print(req_whole)
+
 		result = requests.get(req_whole).json()
 
-		await channel.send(f'Search results for: \"{split_str[2]}\": \n\n__**Author**__: {result["items"][0]["volumeInfo"]["authors"][0]}\n__**Title**__: \"{result["items"][0]["volumeInfo"]["title"]}\"\n__**Description**__: {result["items"][0]["volumeInfo"]["description"]}\n__**Pages**__: {result["items"][0]["volumeInfo"]["pageCount"]}\n__**ISBN-10**__: {result["items"][0]["volumeInfo"]["industryIdentifiers"][1]["identifier"]}\n__**ISBN-13**__: {result["items"][0]["volumeInfo"]["industryIdentifiers"][0]["identifier"]}')
+		await channel.send(f'Search results for: \"{split_str[2]}\": \n\n__**Author**__: {result["items"][0]["volumeInfo"]["authors"][0]}\n__**Title**__: \"{result["items"][0]["volumeInfo"]["title"]}\"\n__**Description**__: {result["items"][0]["volumeInfo"]["description"]}\n__**Pages**__: {result["items"][0]["volumeInfo"]["pageCount"]}\n__**ISBN-10**__: {result["items"][0]["volumeInfo"]["industryIdentifiers"][1]["identifier"]}\n__**ISBN-13**__: {result["items"][0]["volumeInfo"]["industryIdentifiers"][0]["identifier"]}\n{result["items"][0]["volumeInfo"]["imageLinks"]["thumbnail"]}')
 
 	except AttributeError:
 		print('AttributeErr')
@@ -139,6 +130,18 @@ method_dic = {"join": register_member,
 			  "leave": unregister_member,
 			  "lookup": book_lookup,
 				"help": help}
+
+
+# Reacting to reactions
+@client.event
+async def on_reaction_add(reaction, user):
+	if user == client.user:
+		return
+	channel = reaction.channel
+
+	await channel.send(reaction)
+
+	
 
 
 @client.event
